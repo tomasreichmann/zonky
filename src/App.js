@@ -1,25 +1,39 @@
+/** @jsx jsx */
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { jsx } from '@emotion/core'
+import { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Route } from "react-router-dom";
+import Index from "./routes/Index";
+import { ZonkyContext } from "./zonkyService";
+import Detail from './routes/Detail';
 
 function App() {
+  const [loans, setLoans] = useState({ loans: [] });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const apiUri = '/loans/marketplace';
+      await fetch(apiUri)
+        .then((response) => {
+          return response.json();
+        })
+        .then((loans) => {
+          setLoans(loans);
+        }).catch((error) => {
+          console.error(`error fetching data from ${apiUri}`, error);
+        });
+    }
+    fetchData();
+    setInterval(fetchData , 1000 * 60 * 5)
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ZonkyContext.Provider value={loans} >
+      <Router>
+        <Route path="/" exact component={Index} />
+        <Route path="/loan/:id" component={Detail} />
+      </Router>
+    </ZonkyContext.Provider>
   );
 }
 

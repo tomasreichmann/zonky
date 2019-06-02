@@ -4,6 +4,10 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 In the project directory, you can run:
 
+### `npm server`
+
+Run this parallel to `npm start` to start a server with mock api. Connecting to live Zonky api was not possible due to CORS restrictions on the server.
+
 ### `npm start`
 
 Runs the app in the development mode.<br>
